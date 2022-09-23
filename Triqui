@@ -1,0 +1,122 @@
+from machine import Pin as pin, ADC, I2C   
+from utime import sleep_ms  
+from ssd1306 import SSD1306_I2C
+import framebuf
+
+sensorx = ADC(pin(32))  
+sensory = ADC(pin(33))  
+    
+sensorx.atten(ADC.ATTN_11DB)  
+sensorx.width(ADC.WIDTH_12BIT)  
+sensory.atten(ADC.ATTN_11DB)  
+sensory.width(ADC.WIDTH_12BIT)  
+  
+ancho = 128  
+alto = 64  
+  
+i2c = I2C(0, scl=pin(21), sda=pin(19))  
+oled = SSD1306_I2C(ancho, alto, i2c)  
+print(i2c.scan()) 
+
+boton=pin(23, pin.IN, pin.PULL_UP)
+color=1
+movemx=20
+movemy=16
+cuadro=0
+posicion=[1,2,3,4,5,6,7,8,9]
+
+movex=oled.text("X", movemx, movemy)
+moveo=oled.text("O", movemx, movemy)
+  
+while True:
+    
+  oled.fill(0)
+  oled.text("Triqui", 37, 3)
+  oled.show()
+  
+  x = sensorx.read()  
+  y = sensory.read()
+  z = boton.value()
+
+  oled.fill(0)
+  oled.vline(40, 15, 45, 1)
+  oled.vline(80, 15, 45, 1)
+  oled.hline(18, 25, 90, 1)
+  oled.hline(18, 45, 90, 1)
+  oled.show()
+        
+  if x>3600:
+    oled.fill(0)
+    movemx=movemx+1
+    print("Derecha")
+    oled.text("X", movemx, movemy, color)
+    oled.show()
+    posicion=1
+    
+  elif x<150:
+    oled.fill(0)
+    movemx=movemx-1 
+    print("Izquierda")
+    oled.text("X", movemx, movemy, color)
+    oled.show()
+ 
+  if y>3600:
+    oled.fill(0)
+    movemy=movemy-1  
+    print("Arriba")
+    oled.text("X", movemx, movemy, color)
+    oled.show()
+     
+  elif y<150:
+    oled.fill(0)
+    movemy=movemy+1   
+    print("Abajo")
+    oled.text("X", movemx, movemy, color)
+    oled.show()
+   
+  if boton.value()==0:
+       oled.fill(0)
+       oled.text("X", movemx, movemy,color)
+       oled.show()
+    
+  
+      
+ #o
+    
+  if x>3600:
+    oled.fill(0)
+    movemx=movemx+1  
+    print("Derecha")
+    oled.text("O", movemx, movemy, color)
+    oled.show()
+  elif x<150:
+    oled.fill(0)
+    movemx=movemx-1 
+    print("Izquierda")
+    oled.text("O", movemx, movemy, color)
+    oled.show()
+ 
+  if y>3600:
+    oled.fill(0)
+    movemy=movemy-1  
+    print("Arriba")
+    oled.text("O", movemx, movemy, color)
+    oled.show()
+     
+  elif y<150:
+    oled.fill(0)
+    movemy=movemy+1   
+    print("Abajo")
+    oled.text("O", movemx, movemy, color)
+    oled.show()
+   
+  if boton.value()==1:
+       oled.fill(0)
+       oled.text("O", movemx, movemy,color)
+       oled.show()
+ 
+    
+    
+    
+    
+   
